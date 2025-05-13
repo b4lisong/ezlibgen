@@ -55,7 +55,7 @@ The MVP will:
 | **HTTP & Scraping** | `axios` + `cheerio` |
 | **Archiving** | `archiver` to create ZIP files |
 | **Storage** | In-memory for MVP; future: S3-compatible for persistence |
-| **Deployment** | Vercel (frontend), Fly.io or Railway (backend) |
+| **Deployment** | local for MVP; future: Dockerized local deployment, or Vercel (frontend), Fly.io or Railway (backend) |
 
 ## 7. User Flow
 
