@@ -36,25 +36,32 @@ Nonexistent Book by Unknown Author`);
     <div className="app-container">
       <div className="content-container">
         <header className="app-header">
-          <h1 className="app-title">EZLibGen</h1>
+          <h1 className="app-title">
+            <span className="text-indigo-500">EZ</span>LibGen
+          </h1>
           <p className="app-subtitle">Simple Library Genesis Interface</p>
         </header>
 
         <main className="main-card">
           {!results ? (
             <div>
-              <h2 className="text-xl font-semibold mb-4">Enter Book List</h2>
-              <p className="text-gray-600 mb-4">
-                Paste a list of books in the format: <span className="font-mono bg-gray-100 px-2 py-1 rounded">[Title] by [Author]</span>, one book per line.
+              <h2 className="text-2xl font-bold mb-4 text-gray-800">Enter Book List</h2>
+              <p className="text-gray-600 mb-6">
+                Paste a list of books in the format: <span className="font-mono bg-gray-100 px-2 py-1 rounded-md text-indigo-600">[Title] by [Author]</span>, one book per line.
               </p>
               
-              <form onSubmit={handleSubmit}>
-                <textarea
-                  className="book-textarea"
-                  value={bookList}
-                  onChange={(e) => setBookList(e.target.value)}
-                  required
-                ></textarea>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div>
+                  <label htmlFor="book-list" className="block text-sm font-medium text-gray-700 mb-2">Book List</label>
+                  <textarea
+                    id="book-list"
+                    className="book-textarea"
+                    value={bookList}
+                    onChange={(e) => setBookList(e.target.value)}
+                    placeholder="Enter one book per line in the format: Title by Author"
+                    required
+                  ></textarea>
+                </div>
                 
                 <button 
                   type="submit" 
@@ -69,20 +76,27 @@ Nonexistent Book by Unknown Author`);
                       </svg>
                       Processing...
                     </span>
-                  ) : 'Start Download'}
+                  ) : (
+                    <span className="flex items-center justify-center">
+                      <svg className="mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                      </svg>
+                      Start Download
+                    </span>
+                  )}
                 </button>
               </form>
             </div>
           ) : (
             <div>
-              <h2 className="text-xl font-semibold mb-4">Download Results</h2>
+              <h2 className="text-2xl font-bold mb-6 text-gray-800">Download Results</h2>
               
               <div className="success-banner">
                 <div className="flex items-center">
-                  <svg className="h-5 w-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                  <svg className="h-6 w-6 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                   </svg>
-                  <p className="text-green-700">Your archive is ready!</p>
+                  <p className="text-green-700 font-medium text-lg">Your archive is ready!</p>
                 </div>
                 <a 
                   href={results.downloadUrl} 
@@ -111,7 +125,7 @@ Nonexistent Book by Unknown Author`);
                 </div>
               </div>
               
-              <div>
+              <div className="mt-8">
                 <h3 className="summary-title">Details</h3>
                 <div className="results-table-container">
                   <table className="results-table">
@@ -124,21 +138,37 @@ Nonexistent Book by Unknown Author`);
                     </thead>
                     <tbody className="table-body">
                       {results.report.items.map((item, index) => (
-                        <tr key={index}>
+                        <tr key={index} className="hover:bg-gray-50 transition-colors">
                           <td className="table-cell-title">{item.title}</td>
                           <td className="table-cell">
                             {item.status === 'success' ? (
                               <span className="status-success">
+                                <svg className="inline-block h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
                                 Success
                               </span>
                             ) : (
                               <span className="status-failed">
+                                <svg className="inline-block h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
                                 Failed
                               </span>
                             )}
                           </td>
                           <td className="table-cell">
-                            {item.format || (item.reason && <span className="text-red-500">{item.reason}</span>)}
+                            {item.format ? (
+                              <span className="px-3 py-1 inline-flex text-sm leading-5 font-medium rounded-md bg-gray-100 text-gray-800">
+                                {item.format}
+                              </span>
+                            ) : (
+                              item.reason && (
+                                <span className="text-red-500 font-medium">
+                                  {item.reason}
+                                </span>
+                              )
+                            )}
                           </td>
                         </tr>
                       ))}
@@ -151,7 +181,10 @@ Nonexistent Book by Unknown Author`);
                 onClick={() => setResults(null)} 
                 className="back-button"
               >
-                ← Start a new search
+                <svg className="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                Start a new search
               </button>
             </div>
           )}
