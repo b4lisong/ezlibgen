@@ -1,8 +1,9 @@
 import { useState } from 'react'
-import './App.css'
 
 function App() {
-  const [bookList, setBookList] = useState('');
+  const [bookList, setBookList] = useState(`The Great Gatsby by F. Scott Fitzgerald
+To Kill a Mockingbird by Harper Lee
+Nonexistent Book by Unknown Author`);
   const [isProcessing, setIsProcessing] = useState(false);
   const [results, setResults] = useState(null);
 
@@ -32,14 +33,14 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 py-8">
-      <div className="container mx-auto px-4">
-        <header className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-gray-800">EZLibGen</h1>
-          <p className="text-gray-600 mt-2">Simple Library Genesis Interface</p>
+    <div className="app-container">
+      <div className="content-container">
+        <header className="app-header">
+          <h1 className="app-title">EZLibGen</h1>
+          <p className="app-subtitle">Simple Library Genesis Interface</p>
         </header>
 
-        <main className="max-w-3xl mx-auto bg-white rounded-lg shadow-md p-6">
+        <main className="main-card">
           {!results ? (
             <div>
               <h2 className="text-xl font-semibold mb-4">Enter Book List</h2>
@@ -49,10 +50,7 @@ function App() {
               
               <form onSubmit={handleSubmit}>
                 <textarea
-                  className="w-full h-64 p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
-                  placeholder="The Great Gatsby by F. Scott Fitzgerald
-To Kill a Mockingbird by Harper Lee
-Nonexistent Book by Unknown Author"
+                  className="book-textarea"
                   value={bookList}
                   onChange={(e) => setBookList(e.target.value)}
                   required
@@ -60,7 +58,7 @@ Nonexistent Book by Unknown Author"
                 
                 <button 
                   type="submit" 
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+                  className={isProcessing ? "submit-button-processing" : "submit-button"}
                   disabled={isProcessing}
                 >
                   {isProcessing ? (
@@ -79,7 +77,7 @@ Nonexistent Book by Unknown Author"
             <div>
               <h2 className="text-xl font-semibold mb-4">Download Results</h2>
               
-              <div className="bg-green-50 border border-green-200 rounded-md p-4 mb-6">
+              <div className="success-banner">
                 <div className="flex items-center">
                   <svg className="h-5 w-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
@@ -88,7 +86,7 @@ Nonexistent Book by Unknown Author"
                 </div>
                 <a 
                   href={results.downloadUrl} 
-                  className="mt-3 inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded focus:outline-none focus:ring-2 focus:ring-green-500 transition"
+                  className="download-button"
                   download
                 >
                   <svg className="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -98,48 +96,48 @@ Nonexistent Book by Unknown Author"
                 </a>
               </div>
               
-              <div className="mb-4">
-                <h3 className="text-lg font-medium mb-2">Summary</h3>
-                <div className="flex space-x-4 text-sm">
-                  <div className="bg-gray-100 px-3 py-1 rounded">
+              <div className="summary-container">
+                <h3 className="summary-title">Summary</h3>
+                <div className="summary-stats">
+                  <div className="stat-total">
                     Total: {results.report.total}
                   </div>
-                  <div className="bg-green-100 px-3 py-1 rounded text-green-800">
+                  <div className="stat-success">
                     Success: {results.report.successful}
                   </div>
-                  <div className="bg-red-100 px-3 py-1 rounded text-red-800">
+                  <div className="stat-failed">
                     Failed: {results.report.failed}
                   </div>
                 </div>
               </div>
               
               <div>
-                <h3 className="text-lg font-medium mb-2">Details</h3>
-                <div className="border rounded-md overflow-hidden">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
+                <h3 className="summary-title">Details</h3>
+                <div className="results-table-container">
+                  <table className="results-table">
+                    <thead className="table-header">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Book</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Format</th>
+                        <th className="table-header-cell">Book</th>
+                        <th className="table-header-cell">Status</th>
+                        <th className="table-header-cell">Format</th>
                       </tr>
                     </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
+                    <tbody className="table-body">
                       {results.report.items.map((item, index) => (
                         <tr key={index}>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.title}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm">
+                          <td className="table-cell-title">{item.title}</td>
+                          <td className="table-cell">
                             {item.status === 'success' ? (
-                              <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                              <span className="status-success">
                                 Success
                               </span>
                             ) : (
-                              <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                              <span className="status-failed">
                                 Failed
                               </span>
                             )}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          <td className="table-cell">
                             {item.format || (item.reason && <span className="text-red-500">{item.reason}</span>)}
                           </td>
                         </tr>
@@ -151,7 +149,7 @@ Nonexistent Book by Unknown Author"
               
               <button 
                 onClick={() => setResults(null)} 
-                className="mt-6 text-blue-600 hover:text-blue-800 font-medium focus:outline-none"
+                className="back-button"
               >
                 ← Start a new search
               </button>
@@ -159,7 +157,7 @@ Nonexistent Book by Unknown Author"
           )}
         </main>
         
-        <footer className="mt-8 text-center text-sm text-gray-500">
+        <footer className="app-footer">
           <p>EZLibGen Interface - Simplified access to Library Genesis</p>
         </footer>
       </div>
